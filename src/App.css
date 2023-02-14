@@ -43,3 +43,9 @@
   margin-top: 100px;
   background-color: aliceblue;
 }
+
+.ruleConfigNode{
+  background-color: '#808080' !important; 
+  width: 300 !important; 
+  height: 200 !important;
+}

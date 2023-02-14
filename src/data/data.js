@@ -1,191 +1,182 @@
 const data = {
-    "_id" : "63cf6660850a880fbc4a32b5",
     "apiComponentList" : [
         {
             "apiConfigDefinition" : {
-                "apiReferenceId" : "637bcffbfb3569276567615a",
+                "apiReferenceId" : "635fcbd36c0bcffbaaa7c692",
                 "apiConfigReference" : {
-                    "serviceName" : "Ninjacart Profile Microservice",
-                    "verb" : "GET",
-                    "url" : "/{realm_id}/{user_id}/organization/details"
+                    "serviceName" : "Fintech LSP Service",
+                    "verb" : "PUT",
+                    "url" : "/api/v1/realm/{realmId}/user/{userId}/loans/additionalInfo"
                 },
-                "name" : "aggregator-api",
-                "version" : (1)
-            },
-            "mappings" : {
-                "pathParamMapping" : {
-                    "user_id" : "$$USERID",
-                    "realm_id" : "$$REALM_ID"
-                },
-                "queryParamMapping" : {
-                    "userId" : "$$USERID",
-                    "fetchUserRealmIdentifierInfo" : true,
-                    "fetchUserRealmDetails" : true
-                }
-            },
-            "name" : "aggregator-api",
-            "version" : (1)
-        },
-        {
-            "apiConfigDefinition" : {
-                "apiReferenceId" : "63bea25630c49e00077b54d5",
-                "apiConfigReference" : {
-                    "serviceName" : "Ninjapay Services",
-                    "verb" : "GET",
-                    "url" : "/api/v1/transaction/actions/creditLimit/{mobileNumber}"
-                },
-                "name" : "get-credit-Limit",
-                "version" : (1)
-            },
-            "mappings" : {
-                "pathParamMapping" : {
-                    "mobileNumber" : "$.set-bnpl[0].data.userRealmDetail.contactNumber"
-                }
-            },
-            "ruleConfigIdentifier" : {
-                "name" : "summary-condition",
-                "version" : (1)
-            },
-            "name" : "get-credit-Limit",
-            "version" : (1)
-        },
-        {
-            "apiConfigDefinition" : {
-                "apiReferenceId" : "637bcd08fb356922aa57be5e",
-                "apiConfigReference" : {
-                    "serviceName" : "Ninjacart Profile Microservice",
-                    "verb" : "POST",
-                    "url" : "/userRealmIdentifierInfo/createUserInfo"
-                },
-                "name" : "create-user-realm-identifier-info",
-                "version" : (1)
+                "name" : "PUT: /api/v1/realm/{realmId}/user/{userId}/loans/additionalInfo"
             },
             "mappings" : {
                 "requestBodyMapping" : {
-                    "__SELF" : "$.final"
+                    "loanId" : "$.input.loanId",
+                    "refType" : "$.input.refType",
+                    "refId" : "$.input.refId"
+                },
+                "pathParamMapping" : {
+                    "userId" : "$$USERID",
+                    "realmId" : "$$REALM_ID"
                 }
             },
-            "ruleConfigIdentifier" : {
-                "name" : "summary-condition",
-                "version" : (1)
+            "name" : "update-loan-additional-info"
+        },
+        {
+            "apiConfigDefinition" : {
+                "apiReferenceId" : "627cedc02bdccddad4e0f48c",
+                "apiConfigReference" : {
+                    "serviceName" : "Fintech LSP Service",
+                    "verb" : "GET",
+                    "url" : "/api/v1/realm/{realmId}/user/{userId}/loans/{loanId}"
+                },
+                "name" : "GET: /api/v1/realm/{realmId}/user/{userId}/loans/{loanId}"
+            },
+            "mappings" : {
+                "requestBodyMapping" : {
+
+                },
+                "pathParamMapping" : {
+                    "realmId" : "ninjacart",
+                    "userId" : "$$USERID",
+                    "loanId" : "$.input.loanId"
+                },
+                "headerMapping" : {
+
+                }
+            },
+            "name" : "get-all-loans",
+               
+        },
+        {
+            "apiConfigDefinition" : {
+                "apiReferenceId" : "6362296d6c0bcffbaaa7c6a7",
+                "apiConfigReference" : {
+                    "serviceName" : "NC LSP Gateway Service",
+                    "verb" : "POST",
+                    "url" : "/api/loans/{loanId}/approve"
+                },
+                "name" : "approve-loan-by-id"
+            },
+            "mappings" : {
+                "requestBodyMapping" : {
+                    "__SELF" : {
+                        "approvedOnDate" : "$.auto-approve-liquiloans-bnpl-loan[1]['data']['submittedOnDate']",
+                        "approvedLoanAmount" : "$.auto-approve-liquiloans-bnpl-loan[1]['data']['allowedLimit']",
+                        "expectedDisbursementDate" : "$.auto-approve-liquiloans-bnpl-loan[1]['data']['expectedDisbursementDate']",
+                        "note" : "approving loan",
+                        "locale" : "en",
+                        "dateFormat" : "dd-MM-yyyy"
+                    }
+                },
+                "pathParamMapping" : {
+                    "loanId" : "$.auto-approve-liquiloans-bnpl-loan[1]['data']['externalId']"
+                }
+            },
+            "name" : "approve-loan-by-id"
+        },
+        {
+            "apiConfigDefinition" : {
+                "apiReferenceId" : "6362296d6c0bcffbaaa7c6ab",
+                "apiConfigReference" : {
+                    "serviceName" : "NC LSP Gateway Service",
+                    "verb" : "POST",
+                    "url" : "/api/makercheckers/{commandId}/approve"
+                },
+                "name" : "approve-maker-checker"
+            },
+            "mappings" : {
+                "pathParamMapping" : {
+                    "commandId" : "$.auto-approve-liquiloans-bnpl-loan[2]['commandId']"
+                }
+            },
+            "ruleConfigIdentifierDefinition" : {
+                "evaluationMode" : "CONTINUOUS",
+                "expressions" : [
+                    {
+                        "type" : "CONDITIONAL",
+                        "rhs" : "{{$.auto-approve-liquiloans-bnpl-loan[2].commandId}} !=null"
+                    }
+                ],
+                "name" : "convertToApproveLoan"
             },
             "runtimeConfig" : {
                 "continueOnError" : true
             },
-            "preprocessMapping" : [
-                {
-                    "mergeMode" : "ARRAY_MAPPING",
-                    "lhs" : "$.set-bnpl[1].summary",
-                    "output" : "onboarded",
-                    "resultMapping" : {
-                        "referenceKey" : "$$APPEND($.providerName,_ONBOARDED)",
-                        "referenceValue" : "$.onboarded",
-                        "userRealmId" : "$.set-bnpl[0].data.userRealmDetail.userRealmId"
-                    },
-                    "runtimeConfig" : {
-                        "mergeCommonProperties" : true
-                    }
+            "name" : "approve-maker-checker"
+        },
+        {
+            "apiConfigDefinition" : {
+                "apiReferenceId" : "638690fafb356927656761df",
+                "apiConfigReference" : {
+                    "serviceName" : "User Store Services",
+                    "verb" : "GET",
+                    "url" : "/api/v1/{entityType}/{id}"
                 },
-                {
-                    "mergeMode" : "ARRAY_MAPPING",
-                    "lhs" : "$.set-bnpl[1].summary",
-                    "output" : "status",
-                    "resultMapping" : {
-                        "referenceKey" : "$$APPEND($.providerName,_STATUS)",
-                        "referenceValue" : "$.status",
-                        "userRealmId" : "$.set-bnpl[0].data.userRealmDetail.userRealmId"
-                    },
-                    "runtimeConfig" : {
-                        "mergeCommonProperties" : true
-                    }
-                },
-                {
-                    "mergeMode" : "ARRAY_MAPPING",
-                    "lhs" : "$.set-bnpl[1].summary",
-                    "output" : "totalBalance",
-                    "resultMapping" : {
-                        "referenceKey" : "$$APPEND($.providerName,_TOTALBALANCE)",
-                        "referenceValue" : "$.totalBalance",
-                        "userRealmId" : "$.set-bnpl[0].data.userRealmDetail.userRealmId"
-                    },
-                    "runtimeConfig" : {
-                        "mergeCommonProperties" : true
-                    }
-                },
-                {
-                    "mergeMode" : "ARRAY_MAPPING",
-                    "lhs" : "$.set-bnpl[1].badge",
-                    "output" : "bnplFlag",
-                    "resultMapping" : {
-                        "referenceKey" : "bnplFlag",
-                        "referenceValue" : "$.bnpl",
-                        "userRealmId" : "$.set-bnpl[0].data.userRealmDetail.userRealmId"
-                    },
-                    "runtimeConfig" : {
-                        "mergeCommonProperties" : true
-                    }
-                },
-                {
-                    "mergeMode" : "APPEND",
-                    "lhs" : "$.status",
-                    "rhs" : "$.onboarded",
-                    "output" : "intermediate0",
-                    "resultMapping" : {
+                "name" : "GET: /api/v1/{entityType}/{id}"
+            },
+            "mappings" : {
+                "requestBodyMapping" : {
 
-                    },
-                    "runtimeConfig" : {
-                        "mergeCommonProperties" : true
-                    }
                 },
-                {
-                    "mergeMode" : "APPEND",
-                    "lhs" : "$.intermediate0",
-                    "rhs" : "$.totalBalance",
-                    "output" : "intermediate1",
-                    "resultMapping" : {
-
-                    },
-                    "runtimeConfig" : {
-                        "mergeCommonProperties" : true
-                    }
+                "pathParamMapping" : {
+                    "entityType" : "User",
+                    "id" : "$$USERID"
                 },
-                {
-                    "mergeMode" : "APPEND",
-                    "lhs" : "$.intermediate1",
-                    "rhs" : "$.bnplFlag",
-                    "output" : "final",
-                    "resultMapping" : {
+                "headerMapping" : {
 
-                    },
-                    "runtimeConfig" : {
-                        "mergeCommonProperties" : true
-                    }
                 }
-            ],
-            "name" : "create-user-realm-identifier-info",
-            "version" : (1)
+            },
+            "name" : "GET: /api/v1/{entityType}/{id}"
+        },
+        {
+            "apiConfigDefinition" : {
+                "apiReferenceId" : "63bea25730c49e00077b54e4",
+                "apiConfigReference" : {
+                    "serviceName" : "Ninjapay Services",
+                    "verb" : "POST",
+                    "url" : "/ninjapay/api/v1/bnpl/realms/{realmId}/users/{userId}/onboarding/status"
+                },
+                "name" : "update-liquiloans-status"
+            },
+            "mappings" : {
+                "requestBodyMapping" : {
+                    "userId" : "$.auto-approve-liquiloans-bnpl-loan[4][0].User.id",
+                    "realmId" : "$.auto-approve-liquiloans-bnpl-loan[4][0].User.primaryRealm",
+                    "phoneNumber" : "$.auto-approve-liquiloans-bnpl-loan[4][0].User.primaryPhoneNumber",
+                    "status" : "ACTIVE"
+                },
+                "pathParamMapping" : {
+                    "userId" : "$.auto-approve-liquiloans-bnpl-loan[4][0].User.id",
+                    "realmId" : "$.auto-approve-liquiloans-bnpl-loan[4][0].User.primaryRealm"
+                }
+            },
+            "name" : "update-liquiloans-status"
         }
     ],
     "responseDefinition" : {
         "responseMapping" : {
-            "summary" : "$.set-bnpl[1].summary",
-            "additional-details" : "$.set-bnpl[0].data.userRealmDetail",
-            "more-details" : "$.set-bnpl[2].data"
+            "0" : "$.auto-approve-liquiloans-bnpl-loan[0]",
+            "1" : "$.auto-approve-liquiloans-bnpl-loan[1]",
+            "2" : "$.auto-approve-liquiloans-bnpl-loan[2]",
+            "3" : "$.auto-approve-liquiloans-bnpl-loan[3]",
+            "4" : "$.auto-approve-liquiloans-bnpl-loan[4]",
+            "5" : "$.auto-approve-liquiloans-bnpl-loan[5]",
+            "message" : "approved loan and updated LiquiLoans status to ACTIVE",
+            "externalId" : "$.auto-approve-liquiloans-bnpl-loan[1].data.externalId",
+            "approvedOnDate" : "$.auto-approve-liquiloans-bnpl-loan[1]['data']['expectedDisbursementDate']",
+            "approvedLoanAmount" : "$.auto-approve-liquiloans-bnpl-loan[1]['data']['allowedLimit']",
+            "expectedDisbursementDate" : "$.auto-approve-liquiloans-bnpl-loan[1]['data']['expectedDisbursementDate']"
         }
     },
     "active" : true,
-    "createdAt" : ("2023-01-24T05:02:24.373+0000"),
-    "updatedAt" : ("2023-01-30T11:00:52.759+0000"),
-    "createdBy" : (1),
-    "updatedBy" : (1),
     "realmId" : "dd180bca-465a-470a-abe4-9d5a15ded551",
-    "nameVersion" : "set-bnpl_2",
+    "nameVersion" : "auto-approve-liquiloans-bnpl-loan_1",
     "tags" : [
-        "ninjapay",
-        "creditLimit"
+        "ninjapay"
     ],
-    "name" : "set-bnpl",
-    "version" : (2),
+    "name" : "auto-approve-liquiloans-bnpl-loan",
     "_class" : "com.ninjacart.wf.infra.adapters.domains.configuration.entities.ServiceConfigEntity"
 }
 
