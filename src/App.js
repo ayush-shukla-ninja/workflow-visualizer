@@ -4,12 +4,13 @@ import { useEffect, useState } from "react";
 import BasicFlow from "./components/BasicFlow";
 
 const filterData = () => {
-  const filteredData = data.apiComponentList.map(({ name, apiConfigDefinition: { apiConfigReference: { url, verb, serviceName }}}) => {
+  const filteredData = data.apiComponentList.map(({ name, apiConfigDefinition: { apiConfigReference: { url, verb, serviceName }},ruleConfigIdentifierDefinition}) => {
       return {
         name,
         verb,
         url,
         serviceName,
+        ruleConfigIdentifierDefinition
       };
     }
   );
